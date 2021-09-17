@@ -11,17 +11,17 @@ contract StarNotary is ERC721 {
         string name;
     }
 
-    // Implement Task 1 Add a name and symbol properties
     // name: Is a short name to your token
+    string public constant name = "StarNotary Token";
     // symbol: Is a short string like 'USD' -> 'American Dollar'
-    
+    string public constant symbol = "SNT";
 
     // mapping the Star with the Owner Address
     mapping(uint256 => Star) public tokenIdToStarInfo;
     // mapping the TokenId and price
     mapping(uint256 => uint256) public starsForSale;
 
-    
+      
     // Create Star using the Struct
     function createStar(string memory _name, uint256 _tokenId) public { // Passing the name and tokenId as a parameters
         Star memory newStar = Star(_name); // Star is an struct so we are creating a new Star
@@ -57,20 +57,38 @@ contract StarNotary is ERC721 {
     // Implement Task 1 lookUptokenIdToStarInfo
     function lookUptokenIdToStarInfo (uint _tokenId) public view returns (string memory) {
         //1. You should return the Star saved in tokenIdToStarInfo mapping
+        // This function returns a string - so return the name of the star
+        return tokenIdToStarInfo[_tokenId].name;
+
     }
 
     // Implement Task 1 Exchange Stars function
     function exchangeStars(uint256 _tokenId1, uint256 _tokenId2) public {
-        //1. Passing to star tokenId you will need to check if the owner of _tokenId1 or _tokenId2 is the sender
-        //2. You don't have to check for the price of the token (star)
-        //3. Get the owner of the two tokens (ownerOf(_tokenId1), ownerOf(_tokenId1)
-        //4. Use _transferFrom function to exchange the tokens.
+        //1. Get the owner of the two tokens (ownerOf(_tokenId1), ownerOf(_tokenId1)
+        address ownerAddressToken1 = ownerOf(_tokenId1);
+        address ownerAddressToken2 = ownerOf(_tokenId2);
+        address sender = msg.sender;
+
+        //2. Passing to star tokenId you will need to check if the owner of _tokenId1 or _tokenId2 is the sender
+        require(ownerAddressToken1 == sender || ownerAddressToken2 == sender, 
+                "The sender does not own either of the Stars being transfered");
+
+        //3. Use _transferFrom function to exchange the tokens.
+        _transferFrom(ownerAddressToken1, ownerAddressToken2, _tokenId1);
+        _transferFrom(ownerAddressToken2, ownerAddressToken1, _tokenId2);
+
     }
 
     // Implement Task 1 Transfer Stars
     function transferStar(address _to1, uint256 _tokenId) public {
+        // The addres of the token owener
+        address ownerAddresToken = ownerOf(_tokenId);
+
         //1. Check if the sender is the ownerOf(_tokenId)
+        require(ownerAddresToken == msg.sender, "You can't transfer a Star you don't own");
+
         //2. Use the transferFrom(from, to, tokenId); function to transfer the Star
+        _transferFrom(ownerAddresToken, _to1, _tokenId);
     }
 
 }
