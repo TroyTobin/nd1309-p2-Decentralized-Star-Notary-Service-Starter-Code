@@ -31,7 +31,10 @@ contract StarNotary is ERC721 {
 
     // Putting an Star for sale (Adding the star tokenid into the mapping starsForSale, first verify that the sender is the owner)
     function putStarUpForSale(uint256 _tokenId, uint256 _price) public {
-        require(ownerOf(_tokenId) == msg.sender, "You can't sale the Star you don't owned");
+        address ownerAddress = ownerOf(_tokenId);
+
+        require(ownerAddress == msg.sender, "You can't sale the Star you don't owned");
+        
         starsForSale[_tokenId] = _price;
     }
 
@@ -42,53 +45,61 @@ contract StarNotary is ERC721 {
     }
 
     function buyStar(uint256 _tokenId) public  payable {
-        require(starsForSale[_tokenId] > 0, "The Star should be up for sale");
+
         uint256 starCost = starsForSale[_tokenId];
+
+        // Sanity check before proceeding
+        require(starCost > 0, "The Star needs to be up for sale");
+        require(msg.value > starCost, "You don't have enough Ether");
+
         address ownerAddress = ownerOf(_tokenId);
-        require(msg.value > starCost, "You need to have enough Ether");
-        _transferFrom(ownerAddress, msg.sender, _tokenId); // We can't use _addTokenTo or_removeTokenFrom functions, now we have to use _transferFrom
-        address payable ownerAddressPayable = _make_payable(ownerAddress); // We need to make this conversion to be able to use transfer() function to transfer ethers
+        
+        // We need to make this conversion to be able to use transfer() function to transfer ethers
+        address payable ownerAddressPayable = _make_payable(ownerAddress);
+
+        // Transfer the token
+        _transferFrom(ownerAddress, msg.sender, _tokenId);
+
+        // Transfer the balances
         ownerAddressPayable.transfer(starCost);
         if(msg.value > starCost) {
             msg.sender.transfer(msg.value - starCost);
         }
     }
 
-    // Implement Task 1 lookUptokenIdToStarInfo
+    // Function that looked up a Star info by token ID
     function lookUptokenIdToStarInfo (uint _tokenId) public view returns (string memory) {
-        //1. You should return the Star saved in tokenIdToStarInfo mapping
-        // This function returns a string - so return the name of the star
+        // Simply returns the start name
         return tokenIdToStarInfo[_tokenId].name;
 
     }
 
-    // Implement Task 1 Exchange Stars function
+    // Function to exchange Star between two addresses
     function exchangeStars(uint256 _tokenId1, uint256 _tokenId2) public {
-        //1. Get the owner of the two tokens (ownerOf(_tokenId1), ownerOf(_tokenId1)
+        // Get the owner of each Star token
         address ownerAddressToken1 = ownerOf(_tokenId1);
         address ownerAddressToken2 = ownerOf(_tokenId2);
         address sender = msg.sender;
 
-        //2. Passing to star tokenId you will need to check if the owner of _tokenId1 or _tokenId2 is the sender
+        // Sanity check the sender of the message owns one of the tokens
         require(ownerAddressToken1 == sender || ownerAddressToken2 == sender, 
                 "The sender does not own either of the Stars being transfered");
 
-        //3. Use _transferFrom function to exchange the tokens.
+        // Transfer Stars between the addresses
         _transferFrom(ownerAddressToken1, ownerAddressToken2, _tokenId1);
         _transferFrom(ownerAddressToken2, ownerAddressToken1, _tokenId2);
 
     }
 
-    // Implement Task 1 Transfer Stars
+    // Function to transfer a Star token
     function transferStar(address _to1, uint256 _tokenId) public {
-        // The addres of the token owener
+        // The addres of the token owner
         address ownerAddresToken = ownerOf(_tokenId);
 
-        //1. Check if the sender is the ownerOf(_tokenId)
+        // Sanity check the sender is the owner of the token
         require(ownerAddresToken == msg.sender, "You can't transfer a Star you don't own");
 
-        //2. Use the transferFrom(from, to, tokenId); function to transfer the Star
+        // Transfer the Star token
         _transferFrom(ownerAddresToken, _to1, _tokenId);
     }
-
 }
