@@ -74,22 +74,46 @@ it('lets user2 buy a star and decreases its balance in ether', async() => {
 });
 
 it('can add the star name and star symbol properly', async() => {
-    // 1. create a Star with different tokenIdlet user1 = accounts[1];
     let instance = await StarNotary.deployed();
 
     // name and symbol functions from from the IERC721Metadata contract
-    let star_name = await instance.name();
-    let star_symbol = await instance.symbol();
+    let star_name   = await instance.name.call();
+    let star_symbol = await instance.symbol.call();
 
-    // 2. Call the name and symbol properties in your Smart Contract and compare with the name and symbol provided
     assert.equal(star_name, "StarNotary Token");
     assert.equal(star_symbol, "SNT");
 });
 
 it('lets 2 users exchange stars', async() => {
-    // 1. create 2 Stars with different tokenId
-    // 2. Call the exchangeStars functions implemented in the Smart Contract
-    // 3. Verify that the owners changed
+    let instance = await StarNotary.deployed();
+
+    let user1 = accounts[1];
+    let user2 = accounts[2];
+    let starId1 = 6;
+    let starId2 = 7;
+
+    // Create Star tokens for each user
+    await instance.createStar('Star One', starId1, {from: user1});
+    await instance.createStar('Star Two', starId2, {from: user2});
+
+    // Sanity check the owners before exchanging
+    assert.equal(await instance.ownerOf.call(starId1), user1);
+    assert.equal(await instance.ownerOf.call(starId2), user2);
+
+    // Exchange the stars - originating from user1
+    await instance.exchangeStars(starId1, starId2, {from: user1});
+
+    // Sanity check the owners after exchanging
+    assert.equal(await instance.ownerOf.call(starId1), user2);
+    assert.equal(await instance.ownerOf.call(starId2), user1);
+
+    // Also should work for message originating from user2
+    await instance.exchangeStars(starId1, starId2, {from: user1});
+
+    // Sanity check the owners after second exchange
+    assert.equal(await instance.ownerOf.call(starId1), user1);
+    assert.equal(await instance.ownerOf.call(starId2), user2);
+
 });
 
 it('lets a user transfer a star', async() => {
