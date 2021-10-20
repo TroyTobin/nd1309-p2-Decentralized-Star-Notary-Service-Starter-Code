@@ -35,13 +35,20 @@ const App = {
     const { createStar } = this.meta.methods;
     const name = document.getElementById("starName").value;
     const id = document.getElementById("starId").value;
+    // https://web3js.readthedocs.io/en/v1.2.11/web3-eth-contract.html#methods-mymethod-send
+    // Send transaction to smart contract - can alter it
     await createStar(name, id).send({from: this.account});
     App.setStatus("New Star Owner is " + this.account + ".");
   },
 
   // Implement Task 4 Modify the front end of the DAPP
   lookUp: async function (){
-    
+    const { lookUptokenIdToStarInfo } = this.meta.methods;
+    const id = document.getElementById("lookid").value;
+    // https://web3js.readthedocs.io/en/v1.2.11/web3-eth-contract.html#methods-mymethod-call
+    // calls a constant method
+    let starName = await lookUptokenIdToStarInfo(id).call();
+    App.setStatus("Star Id '" + id + "' has name '" + starName + "'.");
   }
 
 };
