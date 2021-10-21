@@ -1,42 +1,45 @@
-### Software Versions Used
-```bash
+# Software Versions Used
+```
 > node -v
 v14.17.0
-
+```
+```
 > npm -v
 6.14.13
-
+```
+```
 > npm install truffle -g
 > truffle version
 Truffle v5.4.10 (core: 5.4.10)
 Solidity v0.5.16 (solc-js)
 Node v14.17.0
 Web3.js v1.5.2
-
+```
+```
 > npm install --save  @openzeppelin/contracts
-
+```
+```
 > npm install --save @truffle/hdwallet-provider
+```
+# Deploying Contract 
 
-### Deploying Contract 
-
-#### Testing locally
+## Testing locally
 
 1. Run ganache (AppImage)
+```
 > ./ganache-2.5.4-linux-x86_64.AppImage
-
+```
 2. Run truffle testsuite
+```
 > cd app
 > truffle test
-
 ```
-Using network 'development'.
-
+```
+Using network 'development'
 
 Compiling your contracts...
-===========================
+
 > Everything is up to date, there is nothing to compile.
-
-
 
   ✓ can Create a Star (192ms)
   ✓ lets user1 put up their star for sale (274ms)
@@ -52,7 +55,7 @@ Compiling your contracts...
 ```
 
 
-#### Deploy to rinkeby
+## Deploy to rinkeby
 1. Ensuring rinkeby configuration in truffle
  - Noting here that the mnemonic and the infuraKey are read from disk to files not committed to the repository.
   - .infurakey (The PROJECT ID of the app created in infura)
@@ -75,47 +78,10 @@ const mnemonic  = fs.readFileSync(".secret").toString().trim();
 ```
 
 2. Deploy to rinkeby
-> truffle migrate --reset --network rinkeby
-
 ```
-Compiling your contracts...
-===========================
-> Everything is up to date, there is nothing to compile.
-
-
-
-Migrations dry-run (simulation)
-===============================
-> Network name:    'rinkeby-fork'
-> Network id:      4
-> Block gas limit: 29970648 (0x1c950d8)
-
-
-1_initial_migration.js
-======================
-
-   Deploying 'Migrations'
-   ----------------------
-   > block number:        9498108
-   > block timestamp:     1634731213
-   > account:             0x4b3E79411233668Af1D46cf790a463EBB07351c0
-   > balance:             18.74764314499796412
-   > gas used:            210237 (0x3353d)
-   > gas price:           10 gwei
-   > value sent:          0 ETH
-   > total cost:          0.00210237 ETH
-
-   -------------------------------------
-   > Total cost:          0.00210237 ETH
-
-
-2_deploy_contracts.js
-=====================
-
-   Deploying 'StarNotary'
-   ----------------------
-^C[ttobin@fedora app]$ truffle migrate --reset --network rinkeby
-
+> truffle migrate --reset --network rinkeby
+```
+```
 Compiling your contracts...
 ===========================
 > Everything is up to date, there is nothing to compile.
@@ -169,9 +135,6 @@ Summary
 =======
 > Total deployments:   2
 > Final cost:          0.02352352 ETH
-
-
-
 
 
 Starting migrations...
@@ -235,6 +198,20 @@ Summary
 > Final cost:          0.02401252 ETH
 ```
 
-#### Deployment details
-1. Deployed by address 0x4b3E79411233668Af1D46cf790a463EBB07351c0
-2. Deployed contract address 0x08661d04e2eAEF7cd8a484F6FB72720FF0B1e871
+# Deployment details
+1. Deployed by address 
+- 0x4b3E79411233668Af1D46cf790a463EBB07351c0
+3. Deployed contract address 
+- 0x08661d04e2eAEF7cd8a484F6FB72720FF0B1e871
+
+# Frontend
+## Create star
+
+![image](https://user-images.githubusercontent.com/3337802/138271676-e6978e06-fe5f-48cf-ab4f-61d53dcdbf01.png)
+
+![image](https://user-images.githubusercontent.com/3337802/138271560-7379b4de-411d-4fb3-b8b5-d5ea5faa33b3.png)
+
+## Lookup Information
+![image](https://user-images.githubusercontent.com/3337802/138271735-68c56d80-89ee-4b4e-9f09-93e6b1bef32a.png)
+
+
