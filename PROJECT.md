@@ -1,3 +1,8 @@
+# Contract details
+Name: "StarNotary Token"
+Symbol: "SNT"
+
+
 # Software Versions Used
 ```
 > node -v
@@ -18,12 +23,18 @@ Web3.js v1.5.2
 ```
 > npm install --save  @openzeppelin/contracts
 ```
+- Installed @openzeppelin/contracts@4.3.2
+
+openzeppelin-solidity@2.5.1 is also installed but has been replaced with  @openzeppelin/contracts
+
 ```
 > npm install --save @truffle/hdwallet-provider
 ```
+
 # Deploying Contract 
 
 ## Testing locally
+=======
 
 1. Run ganache (AppImage)
 ```
